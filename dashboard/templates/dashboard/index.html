@@ -1,0 +1,65 @@
+
+<html lang="en">
+    <head>
+      <title>Dashboard</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    
+    <h1> Top 20 directely connected board members </h1>
+      {{ df_board | safe }}
+    
+    
+      <h1> Top 20 directely connected companies  </h1>
+      {{ df_company | safe }}
+    
+    
+    <h1> Individuals </h1>
+    
+    <h2> Who are involed in many companies </h2>
+    
+    
+    <h2> What are the connections of individual __________ ? </h2>
+    
+    <div class="input-group">
+      <div class="form-outline">
+        <form action="person_connection" method="POST">
+            {% csrf_token %}
+            Type the name of the individual you're interested in.
+            <input type="search" name="name" id="name" required class="form-control user-input" />
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-search"></i> Find connections
+              </button>
+        </form>
+      </div>
+    </div>  
+    
+    
+    <h2> What are the connections of company __________ ? </h2>
+    
+    <div class="input-group">
+      <div class="form-outline">
+        <form action="company_connection" method="POST">
+            {% csrf_token %}
+            Type the name of the individual you're interested in.
+            <input type="search" name="name" id="name" required class="form-control user-input" />
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-search"></i> Find connections
+              </button>
+        </form>
+      </div>
+    </div>  
+    
+    
+    
+    
+    
+            
+    
+    </body>
+    </html>
+    
