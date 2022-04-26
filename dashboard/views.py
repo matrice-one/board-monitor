@@ -47,18 +47,36 @@ def index(request):
     return render(request, 'dashboard/index.html', context=context)
 
 
-
 def person_connection(request):
     if request.method == 'POST':
         name = request.POST["name"]
         y = name
         
         df_graph, board_members, companies = get_full_connectivity_board(df, y)
+    
+    nodes_list, links_list = get_data_js(df_graph)
+    nodes_list = json.dumps(nodes_list)
+    links_list = json.dumps(links_list)
+
+
+    context = {'nodes_list':nodes_list,
+    'links_list':links_list}
+
+    print(nodes_list)
+    return render(request, 'dashboard/results_d3.html', context =context)
+
+
+# def person_connection(request):
+#     if request.method == 'POST':
+#         name = request.POST["name"]
+#         y = name
+        
+#         df_graph, board_members, companies = get_full_connectivity_board(df, y)
 
     
-    create_graph_person(df_graph)
+#     create_graph_person(df_graph)
 
-    return render(request, 'dashboard/graph_person.html')
+#     return render(request, 'dashboard/graph_person.html')
 
 
 

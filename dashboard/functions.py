@@ -127,3 +127,52 @@ def create_graph_company(df_graph):
 
     net.show_buttons(filter_=True)
     net.show('dashboard/templates/dashboard/graph_company.html')
+
+
+
+def get_data_js(df_graph):
+    df_graph = df_graph[['Name and Surname', 'company_name']]
+    df_graph.columns = ['source','target']
+    grouped_src_dst = df_graph.groupby(["source","target"]).size().reset_index()
+    
+    unique_nodes = pd.Index(grouped_src_dst['source']
+                      .append(grouped_src_dst['target'])
+                      .reset_index(drop=True).unique())
+
+    nodes_list = []
+    for ip in unique_nodes:
+        nodes_list.append({"name":ip})
+    nodes_list
+
+    df1 = pd.DataFrame(nodes_list)
+
+
+    yala = []
+    i = 0
+    while i < len(grouped_src_dst):
+        yala.append({"group":1, "name":grouped_src_dst.iloc[i]['source']})
+        yala.append({"group":2, "name":grouped_src_dst.iloc[i]['target']})
+        i +=1
+
+    df2 = pd.DataFrame(yala)
+    result = pd.merge(df1, df2, on=["name", "name"])
+    check = df1.merge(df2, how='left', on='name').drop_duplicates()
+    
+    nodes_list = []
+
+    i = 0 
+    while i < len(check):
+        nodes_list.append({"group":str(check.iloc[i]['group']), "name":str(check.iloc[i]['name'])})
+        #nodes_list.append({"name":str(check.iloc[i]['name'])})
+        i += 1
+        
+    grouped_src_dst.rename(columns={0:'count'}, inplace=True)
+    temp_links_list = list(grouped_src_dst.apply(lambda row: {"source": row['source'], "target": row['target'], "value": row['count']}, axis=1))
+
+    links_list = []
+    for link in temp_links_list:
+        record = {"source":unique_nodes.get_loc(link['source']),
+         "target": unique_nodes.get_loc(link['target'])}
+        links_list.append(record)
+        
+    return nodes_list, links_list
