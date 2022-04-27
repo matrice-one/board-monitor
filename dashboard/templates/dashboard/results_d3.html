@@ -17,11 +17,10 @@
     var sourceNodes =  {{ nodes_list |safe }};
     var links = {{ links_list |safe }}; 
     var color = d3.scaleOrdinal(d3.schemeCategory10);
-
     
     var simulation = d3.forceSimulation(sourceNodes)
-        .force("charge", d3.forceManyBody(-100))
-        .force("link", d3.forceLink(links).distance(80))
+        .force("charge", d3.forceManyBody(-10000).strength(-50).distanceMax(0.5 * Math.min(width, height)))
+        .force("link", d3.forceLink(links).distance(width / 6))
         .force("center", d3.forceCenter().x(width / 3).y(height / 2));
 
     var svg = d3.select('body')
@@ -34,7 +33,7 @@
         .enter()
         .append("line")
         .style("stroke", "#ccc")
-        .style("stroke-width", 1);
+        .style("stroke-width", 2);
 
     var circlesGroup = svg.selectAll("g")
         .data(sourceNodes)
@@ -43,7 +42,7 @@
 
     var circles = circlesGroup
         .append("circle")
-        .attr("r", 7.5)
+        .attr("r", 8.5)
         .style("fill", function (d, i) {
             return color(d.group);
         })
@@ -91,6 +90,23 @@
         text.attr("x", function (d) { return d.x + radius; })
             .attr("y", function (d) { return d.y + radius; });
     });
+
+    function dragStarted(event) {
+        if (!event.active) { simulation.alphaTarget(0.3).restart(); }
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+      }
+  
+      function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+      }
+  
+      function dragEnded(event) {
+        if (!event.active) { simulation.alphaTarget(0); }
+        event.subject.fx = null;
+        event.subject.fy = null;
+      }
 }
 </script>
 

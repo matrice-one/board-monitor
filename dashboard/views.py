@@ -31,12 +31,12 @@ df['Name and Surname'].mask((df['Name and Surname'].str.contains("CH-")),(df['Na
 def index(request):
     top_connected = pd.DataFrame(df['Name and Surname'].value_counts())
     top_connected = top_connected[top_connected['Name and Surname'] >= 2]
-    top_connected = top_connected[:20]
+    top_connected = top_connected[200:220]
     top_connected_board_member = top_connected.to_html()
 
     top_connected = pd.DataFrame(df['Company'].value_counts())
     top_connected = top_connected[top_connected['Company'] >= 2]
-    top_connected = top_connected[:20]
+    top_connected = top_connected[200:220]
     top_connected_company = top_connected.to_html()
 
     context= {
@@ -53,7 +53,7 @@ def person_connection(request):
         y = name
         
         df_graph, board_members, companies = get_full_connectivity_board(df, y)
-    
+    print(df_graph)
     nodes_list, links_list = get_data_js(df_graph)
     nodes_list = json.dumps(nodes_list)
     links_list = json.dumps(links_list)
