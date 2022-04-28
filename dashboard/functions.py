@@ -25,8 +25,9 @@ def get_full_connectivity_company(df, y):
         companies = ['None']
         
 
-    while (j < 300):
+    while (j < 900):
         more_companies = []
+        more_members = []
         
         ## 2. Search if board members belong to more companies
         for i in board_members:
@@ -38,12 +39,10 @@ def get_full_connectivity_company(df, y):
             more_companies = list(dict.fromkeys(more_companies))
         print('more_companies')
        
-        more_members = []
         
         for i in more_companies:
             find_as_company = (df[df['Company']==str(i)])['Name and Surname'].tolist()
             j += len(find_as_company)
-
             more_members = more_members + find_as_company
             # remove duplicates
             more_members = list(dict.fromkeys(more_members))
@@ -52,20 +51,19 @@ def get_full_connectivity_company(df, y):
         
         companies = more_companies
         board_members = more_members + more_companies
-        board_members_export = more_members
         
         l += 1
         print('Going one level deeper for a total of', l)
 
-    board_members = pd.DataFrame(board_members_export)
+    board_members = pd.DataFrame(board_members)
     companies = pd.DataFrame(companies)
     board_members.columns = ['member_name']
     companies.columns = ['company_name']
 
-    df_graph = pd.merge(df, companies, how='right',left_on='Company', right_on='company_name')
+    df_graph = pd.merge(df, board_members, how='right',left_on='Name and Surname', right_on='member_name')
     
     ## This should be replaced later on
-    df_graph = df_graph[:100]
+    df_graph = df_graph[:500]
     return df_graph, board_members, companies
 
 def get_full_connectivity_board(df, y):
@@ -150,7 +148,7 @@ def create_graph_company(df_graph):
 
 
 def get_data_js(df_graph):
-    df_graph = df_graph[['Name and Surname', 'company_name']]
+    df_graph = df_graph[['Name and Surname', 'Company']]
     df_graph.columns = ['source','target']
     grouped_src_dst = df_graph.groupby(["source","target"]).size().reset_index()
     
