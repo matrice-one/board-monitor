@@ -2,52 +2,71 @@ from pyvis.network import Network
 import pandas as pd
 
 def get_full_connectivity_company(df, y):
+    board_members = []
+    board_members_export = []
+    companies = []
+    
+    condition = False
+    n = 0
+    l = 0
+    j = 0
     
     ## CASE 2= NOT FOUND ON BOARD BUT IN REGISTER
     ## 1. Find board members
-    more_members = (df[df['Company']==str(y)]['Name and Surname']).tolist()
+    if (df['Company'].str.contains(y).any()):
+        board_members = (df[df['Company']==str(y)]['Name and Surname']).tolist()
     
-    
-    board_members = []
-    companies = []
-    condition = False
-    
-    while (condition == False):
+    elif (df['Name and Surname'].str.contains(y).any()):
+        board_members = (df[df['Name and Surname']==str(y)]['Name and Surname']).tolist()
+
+    else:
+        condition = True
+        board_members = ['None']
+        companies = ['None']
         
+
+    while (j < 300):
         more_companies = []
         
         ## 2. Search if board members belong to more companies
-        for i in more_members:
+        for i in board_members:
             find_as_company = (df[df['Name and Surname']==str(i)])['Company'].tolist()
+            j += len(more_companies)
+            
             more_companies = more_companies + find_as_company
             # remove duplicates
             more_companies = list(dict.fromkeys(more_companies))
+        print('more_companies')
        
         more_members = []
         
         for i in more_companies:
             find_as_company = (df[df['Company']==str(i)])['Name and Surname'].tolist()
+            j += len(find_as_company)
+
             more_members = more_members + find_as_company
             # remove duplicates
             more_members = list(dict.fromkeys(more_members))
-            
-        
-        condition1 = (more_companies == companies) 
-        condition2 = (more_members == board_members)
-        condition = condition1 and condition2
+        print('more_members')
+
         
         companies = more_companies
-        board_members = more_members
+        board_members = more_members + more_companies
+        board_members_export = more_members
+        
+        l += 1
+        print('Going one level deeper for a total of', l)
 
-    board_members = pd.DataFrame(board_members)
+    board_members = pd.DataFrame(board_members_export)
     companies = pd.DataFrame(companies)
     board_members.columns = ['member_name']
     companies.columns = ['company_name']
 
-    df_graph = pd.merge(df, companies, how='inner',left_on='Company', right_on='company_name')
-
+    df_graph = pd.merge(df, companies, how='right',left_on='Company', right_on='company_name')
+    
+    ## This should be replaced later on
+    df_graph = df_graph[:100]
     return df_graph, board_members, companies
-
 
 def get_full_connectivity_board(df, y):
     more_companies = (df[df['Name and Surname']==str(y)]['Company']).tolist()

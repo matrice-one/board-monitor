@@ -52,6 +52,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'board_monitor.urls'
 
+import os
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -68,6 +71,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 import os
 
 SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
@@ -83,13 +88,8 @@ WSGI_APPLICATION = 'board_monitor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'people-companies-table',
-        'USER': 'elona',
-        'PASSWORD': 'SimplyCentered',
-        'HOST': 'database-1.c2zdqqsblqwz.eu-west-3.rds.amazonaws.com',
-        'PORT': '5432',
-        
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
