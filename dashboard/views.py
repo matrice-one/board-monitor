@@ -9,10 +9,10 @@ from .functions import *
 # Create your views here.
 import json
 s3 = boto3.resource('s3')
-obj = s3.Object('history-1-register', 'initial_db.json')
+obj = s3.Object('board-monitor-main-db', 'full_db.json')
 data = obj.get()['Body'].read().decode('utf-8')
 json_data = json.loads(data)
-df = pd.DataFrame(json_data)
+df = pd.read_json(json_data, orient ='columns')
 
 # Add number of occurence
 df['Weight_Person'] = df.groupby('Name and Surname')['Name and Surname'].transform('size')
@@ -22,7 +22,6 @@ df['Weight_Company'] = df.groupby('Company')['Company'].transform('size')
 df = df[['Name and Surname','Company','Weight_Person','Weight_Company']]
 df =df.drop_duplicates()
 
-# df = pd.read_excel('/Users/neigelinerivollat/Desktop/Pictet project/where_are_you.xlsx')
 # df2 = df.set_axis(['Index', 'Name', 'Status', 'Signature mode', 'Company'], axis=1, inplace=False)
 # try:
 #     df2 = df.set_axis(['Index','Name', 'Status', 'Signature mode', 'Company'], axis=1, inplace=False)

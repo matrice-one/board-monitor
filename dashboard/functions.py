@@ -25,7 +25,7 @@ def get_full_connectivity_company(df, y):
         companies = ['None']
         
 
-    while (j < 900):
+    while (j < 30):
         more_companies = []
         more_members = []
         
