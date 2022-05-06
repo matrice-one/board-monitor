@@ -63,7 +63,7 @@ def get_full_connectivity_company(df, y):
     df_graph = pd.merge(df, board_members, how='right',left_on='Name and Surname', right_on='member_name')
     
     ## This should be replaced later on
-    df_graph = df_graph[:40]
+    df_graph = df_graph[:100]
     return df_graph, board_members, companies
 
 def get_full_connectivity_board(df, y):
